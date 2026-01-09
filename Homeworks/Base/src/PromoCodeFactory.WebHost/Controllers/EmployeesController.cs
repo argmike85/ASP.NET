@@ -70,5 +70,21 @@ namespace PromoCodeFactory.WebHost.Controllers
 
             return employeeModel;
         }
+
+        [HttpDelete("Delete")]
+        public async Task DeleteEmployeeAsync(Guid id)
+        { await _employeeRepository.DeleteAsync(id); }
+
+        [HttpPost("Create")]
+        public async Task CreateEmployeeAsync([FromBody] Employee employee)
+        {
+            await _employeeRepository.CreateAsync(employee);
+        }
+
+        [HttpPut("Update")]
+        public async Task UpdateEmployee([FromBody] Employee employee)
+        {
+            await _employeeRepository.UpdateAsync(employee);
+        }
     }
 }
