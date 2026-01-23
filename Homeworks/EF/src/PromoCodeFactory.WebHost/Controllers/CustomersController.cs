@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PromoCodeFactory.Core.Abstractions.Repositories;
+using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.WebHost.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 namespace PromoCodeFactory.WebHost.Controllers
@@ -13,39 +18,65 @@ namespace PromoCodeFactory.WebHost.Controllers
     public class CustomersController
         : ControllerBase
     {
+        private readonly IRepository<Customer> _customerRepository;
+        public CustomersController(IRepository<Customer> customerRepository)
+        {
+            _customerRepository = customerRepository;
+        }
+
+        /// <summary>
+        /// Получить данные всех клиентов
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public Task<ActionResult<CustomerShortResponse>> GetCustomersAsync()
+        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAsync()
         {
-            //TODO: Добавить получение списка клиентов
-            throw new NotImplementedException();
+            var result = await _customerRepository.GetAllAsync();
+            return Ok(result);
         }
 
+        /// <summary>
+        /// Получить данные клиента по id
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
+        public async Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
         {
-            //TODO: Добавить получение клиента вместе с выданными ему промомкодами
-            throw new NotImplementedException();
+           var result = await _customerRepository.GetByIdAsync(id);
+            return Ok(result);
         }
 
+        /// <summary>
+        /// Создать клиента
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
-        public Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
+        public async Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
-            //TODO: Добавить создание нового клиента вместе с его предпочтениями
-            throw new NotImplementedException();
+            await _customerRepository.AddAsync(new Customer() { FirstName = request.FirstName, LastName = request.LastName, Email = request.Email });
+            return Ok();
         }
 
+        /// <summary>
+        /// Обновление клиента
+        /// </summary>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
+        public async Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
         {
-            //TODO: Обновить данные клиента вместе с его предпочтениями
-            throw new NotImplementedException();
+            await _customerRepository.UpdateAsync(new Customer() { FirstName = request.FirstName, LastName = request.LastName, Email = request.Email });
+            return Ok();
         }
 
+        /// <summary>
+        /// Удаление клиента по Id
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete]
-        public Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-            //TODO: Удаление клиента вместе с выданными ему промокодами
-            throw new NotImplementedException();
+             await _customerRepository.DeleteAsync(id);
+             return NoContent();
         }
     }
 }
