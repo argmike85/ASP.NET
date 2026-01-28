@@ -32,6 +32,8 @@ namespace PromoCodeFactory.WebHost.Controllers
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomersAsync()
         {
             var result = await _customerRepository.GetAllAsync();
+            if (result == null)
+                return NotFound();
             return Ok(result);
         }
 
@@ -43,6 +45,8 @@ namespace PromoCodeFactory.WebHost.Controllers
         public async Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
         {
            var result = await _customerRepository.GetByIdAsync(id);
+            if (result == null)
+                return NotFound();
             return Ok(result);
         }
 
@@ -53,8 +57,25 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
-            await _customerRepository.AddAsync(new Customer() { FirstName = request.FirstName, LastName = request.LastName, Email = request.Email });
-            return Ok();
+            if (request == null || string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName) || string.IsNullOrWhiteSpace(request.Email))
+            {
+                return BadRequest("Invalid customer data.");
+            }
+
+            try
+            {
+                await _customerRepository.AddAsync(new Customer()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -64,8 +85,25 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
         {
-            await _customerRepository.UpdateAsync(new Customer() { FirstName = request.FirstName, LastName = request.LastName, Email = request.Email });
-            return Ok();
+            if (id == Guid.Empty || request == null || string.IsNullOrWhiteSpace(request.FirstName) || string.IsNullOrWhiteSpace(request.LastName) || string.IsNullOrWhiteSpace(request.Email))
+            {
+                return BadRequest("Invalid customer data or ID.");
+            }
+
+            try
+            {
+                await _customerRepository.UpdateAsync(new Customer()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email
+                });
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         /// <summary>
@@ -75,8 +113,20 @@ namespace PromoCodeFactory.WebHost.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-             await _customerRepository.DeleteAsync(id);
-             return NoContent();
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid customer ID.");
+            }
+
+            try
+            {
+                await _customerRepository.DeleteAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
 {
@@ -17,6 +18,14 @@ namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
         public ICollection<CustomerPreference> CustomerPreferences { get; set; }
         public ICollection<PromoCode> PromoCodes { get; set; }
 
-        //TODO: Списки Preferences и Promocodes 
+        public IEnumerable<Preference> GetPreferences()
+        {
+            return CustomerPreferences.Select(cp => cp.Preference).ToList();
+        }
+
+        public IEnumerable<PromoCode> GetPromoCodes()
+        {
+            return PromoCodes.ToList();
+        }
     }
 }
