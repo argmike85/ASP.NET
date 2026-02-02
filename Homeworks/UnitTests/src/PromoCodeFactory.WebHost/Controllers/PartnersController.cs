@@ -45,7 +45,7 @@ namespace PromoCodeFactory.WebHost.Controllers
                         EndDate = y.EndDate.ToString("dd.MM.yyyy hh:mm:ss"),
                         CancelDate = y.CancelDate?.ToString("dd.MM.yyyy hh:mm:ss"),
                     }).ToList()
-            });
+            }).ToList();
 
             return Ok(response);
         }
