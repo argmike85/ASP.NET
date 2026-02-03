@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj
+      run: dotnet restore Homeworks/UnitTests/src/PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj
     - name: Build
-      run: dotnet build PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj --no-restore
+      run: dotnet build Homeworks/UnitTests/src/PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj --no-restore
     - name: Test
-      run: dotnet test PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj --no-build --verbosity normal
+      run: dotnet test Homeworks/UnitTests/src/PromoCodeFactory.WebHost/PromoCodeFactory.WebHost.csproj --no-build --verbosity normal
