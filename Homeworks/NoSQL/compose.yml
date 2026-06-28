@@ -54,6 +54,7 @@ services:
       - POSTGRES_PASSWORD=docker
   #GivingToCustomer Api
   promocode-factory-giving-to-customer-api:
+  
     build: src/Pcf.GivingToCustomer/
     container_name: 'promocode-factory-giving-to-customer-api'
     restart: always
@@ -63,3 +64,8 @@ services:
       - "ConnectionStrings:PromocodeFactoryGivingToCustomerDb=Host=promocode-factory-giving-to-customer-db;Database=promocode_factory_giving_to_customer_db;Username=postgres;Password=docker"          
     depends_on: 
       - promocode-factory-giving-to-customer-db
+  redis:
+    image: redis:7.0
+    container_name: promocode-redis
+    ports:
+    - "6379:6379"
