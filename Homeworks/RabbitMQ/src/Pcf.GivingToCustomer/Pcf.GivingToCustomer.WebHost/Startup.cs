@@ -14,6 +14,8 @@ using Pcf.GivingToCustomer.DataAccess.Repositories;
 using Pcf.GivingToCustomer.Integration;
 using MassTransit;
 using Pcf.GivingToCustomer.WebHost.Consumers;
+using Pcf.GivingToCustomer.WebHost.Grpc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Pcf.GivingToCustomer.WebHost
 {
@@ -66,6 +68,8 @@ namespace Pcf.GivingToCustomer.WebHost
                     cfg.ConfigureEndpoints(context);
                 });
             });
+            services.AddGrpc();
+            services.AddGraphQLServer().AddQueryType<Pcf.GivingToCustomer.WebHost.GraphQL.Query>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,7 +83,7 @@ namespace Pcf.GivingToCustomer.WebHost
             {
                 app.UseHsts();
             }
-
+                        
             app.UseOpenApi();
             app.UseSwaggerUi(x =>
             {
@@ -93,6 +97,8 @@ namespace Pcf.GivingToCustomer.WebHost
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<CustomerGrpcService>();
+                endpoints.MapGraphQL();
             });
 
             dbInitializer.InitializeDb();

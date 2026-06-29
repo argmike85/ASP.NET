@@ -1,0 +1,30 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Customers.Grpc";
+
+package customer;
+
+service CustomerService {
+  rpc GetCustomer (CustomerRequest)
+      returns (CustomerReply);
+
+  rpc GetCustomers (Empty)
+      returns (CustomerList);
+}
+
+message Empty {}
+
+message CustomerRequest {
+  string id = 1;
+}
+
+message CustomerReply {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  bool found = 4;
+}
+
+message CustomerList {
+  repeated CustomerReply customers = 1;
+}
